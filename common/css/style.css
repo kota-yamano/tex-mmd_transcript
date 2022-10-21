@@ -1,0 +1,35 @@
+.txtarea-list {
+    display: flex;
+    justify-content: center;
+    /* 中央寄せ */
+}
+
+.txtarea {
+    flex: 1;
+    display: inline-block;
+    margin: 0 10px
+}
+
+textarea {
+    resize: none;
+    width: 100%;
+    height: 600px;
+}
+
+.btn-container {
+    display: flex;
+    text-align: center;
+}
+
+button {
+    width: 80%;
+    height: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 0 10px
+}
+
+button:hover {
+    opacity: 0.7;
+}

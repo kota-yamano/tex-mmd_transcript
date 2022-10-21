@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>TeX Shaper</title>
+    <link rel="stylesheet" href="./common/css/style.css">
+    <script type="module" src="./common/js/main.js" defer=""></script>
+</head>
+
+<body>
+    <div class="txtarea-list">
+        <div class="txtarea"><textarea id="txtarea1" name="tex_code" placeholder="ここにtex/mmdコードをペーストしてください."
+                autofocus></textarea>
+        </div>
+        <div class="txtarea"><textarea id="txtarea2" name="before_translation" placeholder="ここに翻訳ツール用に整形されたテキストが表示されます."
+                readonly></textarea>
+        </div>
+        <div class="txtarea"><textarea id="txtarea3" name="after_translation"
+                placeholder="ここに翻訳後のテキストをペーストしてください．"></textarea></div>
+        <div class="txtarea"><textarea id="txtarea4" name="translated_tex"
+                placeholder="ここに翻訳されたtex/mmdコードが表示されます."></textarea></div>
+    </div>
+
+    <div class="btn-container">
+        <button id="btn1">翻訳用テキストに変換</button>
+        <button id="btn2">DeepLで翻訳</button>
+        <button id="btn3">texコードに再変換</button>
+    </div>
+</body>
+
+</html>
