@@ -8,24 +8,22 @@ const config = {
         [/\\begin\{aligned\}[\s]*/g, ''],
         [/\\end\{aligned\}[\s]*/g, ''],
         [/\\\(([\s\S]+?)\\\)/g, '$$$1$$'],
-        [/\\\$/g, 'dollars'],
     ],
     postproc_subpairs: [
 
     ],
     delimiters: [
+        /\\\$/g,
         /\$([\s\S]+?)\$/g,
-        /\\begin\{align\}([\s\S]+?)\\end\{align\}/g,
-        /\\title\{[\s\S]+?[\r\n]\}/g,
-        /\\author\{[\s\S]+?[\r\n]\}/g,
-        /\\begin\{abstract\}([\s\S]+?)\\end\{abstract\}/g,
-        /\\section\{REFERENCES\}[\s\S]*/g,
-        /\\section\{References\}[\s\S]*/g,
-        /\\section\{(.+?)\}/g,
-        /\\subsection\{(.+?)\}/g,
-        /\\subsubsection\{(.+?)\}/g,
-        /\\begin\{tabular\}[\s\S]+?\\end\{tabular\}/g,
-        /\!\[\]\(.+?\)/g,
+        /\\begin\{abstract\}/g,
+        /\\end\{abstract\}/g,
+        /\\begin\{document\}/g,
+        /\\end\{document\}/g,
+        /\\section\{REFERENCES\}[\s\S]*/ig,
+        [/\\begin\{([\s\S]+?)\}(\[[\s\S]+?\]|\{[\s\S]+?\})*/g, /\\end\{([\s\S]+?)\}/g],
+        /\\[^\{\[\s]*(\[[\s\S]+?\]|\{[\s\S]+?\})+/g,
+        /\!\[\]\(.+?\)/g, // mmd
+        [/<(smiles)>/g, /<\\(smiles)>/g], //mmd
     ],
     encode_smb: 'TCMD'
 }

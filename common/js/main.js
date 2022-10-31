@@ -11,14 +11,21 @@ const btn3 = document.getElementById('btn3');
 
 let cvtr = new txt_converter(config);
 
+ta1.addEventListener('input', () => {
+    ta2.value = cvtr.tex2trns(ta1.value);
+    const ta2_count = ta2.value.length;
+});
+
+ta3.addEventListener('input', () => {
+    ta4.value = cvtr.trns2tex(ta3.value.replace(/／/g, "/"));
+});
+
 btn1.addEventListener('click', () => {
-    const txt = cvtr.tex2trns(ta1.value);
-    ta2.value = txt;
+    navigator.clipboard.writeText(ta2.value);
 });
 btn2.addEventListener('click', () => {
     window.open("https://www.deepl.com/translator#en/ja/" + encodeURIComponent(ta2.value.replace(/\//g, "／")));
 });
 btn3.addEventListener('click', () => {
-    const txt = cvtr.trns2tex(ta3.value.replace(/／/g, "/"));
-    ta4.value = txt;
+    navigator.clipboard.writeText(ta4.value);
 });
