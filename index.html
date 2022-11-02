@@ -1,39 +1,116 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="h-100">
 
 <head>
     <meta charset="utf-8">
     <title>TeX Shaper</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./common/css/style.css">
     <script type="module" src="./common/js/main.js" defer=""></script>
 </head>
 
-<body>
-    <div class="header">
-        <div class="header-ul">
-            <div class="header-li">使い方</div>
-            <div class="header-li">更新履歴</div>
-            <div class="header-li">GitHub</div>
-        </div>
-    </div>
+<body class="h-100">
+    <div class="container-fluid h-100 d-flex flex-column">
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+                <span class="navbar-brand mb-0 h1">TeX Shaper</span>
+                <div class="collapse navbar-collapse justify-content-end">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://github.com/kota-yamano/tex_shaper/wiki">
+                                使い方
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://github.com/kota-yamano/tex_shaper/issues">
+                                ご意見･ご要望
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://github.com/kota-yamano/tex_shaper">
+                                GitHub
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
 
-    <div class="txtarea-list">
-        <div class="txtarea"><textarea id="txtarea1" name="tex_code" placeholder="ここにtex/mmdコードをペーストしてください."
-                autofocus></textarea>
+        <div class="container-fluid flex-grow-1">
+            <div class="row h-100">
+                <div class="col d-flex flex-column mx-1 mt-2">
+                    <div class="row my-1">
+                        <span class="col h5">No.1</span>
+                        <div class="col col-lg-auto">
+                            <select class="form-control form-control-sm" id="opt_file_select">
+                                <option value="mmd" selected>mmd</option>
+                                <option value="tex">tex</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-outline-dark btn-sm" id="btn_cp1">コピー</button>
+                    </div>
+                    <div class="row flex-grow-1">
+                        <textarea class="form-control h-100" id="txtarea1" placeholder="ここにtex/mmdコードをペーストしてください."
+                            autofocus></textarea>
+                    </div>
+                </div>
+                <div class="col d-flex flex-column mx-1 mt-2">
+                    <div class="row my-1">
+                        <span class="col h5">No.2</span>
+                        <div class="text-right">
+                            <button class="btn btn-outline-dark btn-sm" id="btn_cp2">コピー</button>
+                        </div>
+                    </div>
+                    <div class="row flex-grow-1">
+                        <textarea class="form-control h-100" id="txtarea2" placeholder="ここに整形されたテキストが表示されます."
+                            readonly></textarea>
+                    </div>
+                </div>
+                <div class="col d-flex flex-column mx-1 mt-2">
+                    <div class="row my-1">
+                        <span class="col h5">No.3</span>
+                        <div class="text-right">
+                            <button class="btn btn-outline-dark btn-sm" id="btn_cp3">コピー</button>
+                        </div>
+                    </div>
+                    <div class="row flex-grow-1">
+                        <textarea class="form-control h-100" id="txtarea3"
+                            placeholder="ここに翻訳後のテキストをペーストしてください．"></textarea>
+                    </div>
+                </div>
+                <div class="col d-flex flex-column mx-1 mt-2">
+                    <div class="row my-1">
+                        <span class="col h5">No.4</span>
+                        <div class="text-right">
+                            <button class="btn btn-outline-dark btn-sm" id="btn_cp4">コピー</button>
+                        </div>
+                    </div>
+                    <div class="row flex-grow-1">
+                        <textarea class="form-control h-100" id="txtarea4" placeholder="ここに翻訳されたtex/mmdコードが表示されます."
+                            readonly></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="txtarea"><textarea id="txtarea2" name="before_translation" placeholder="ここに翻訳ツール用に整形されたテキストが表示されます."
-                readonly></textarea>
-        </div>
-        <div class="txtarea"><textarea id="txtarea3" name="after_translation"
-                placeholder="ここに翻訳後のテキストをペーストしてください．"></textarea></div>
-        <div class="txtarea"><textarea id="txtarea4" name="translated_tex"
-                placeholder="ここに翻訳されたtex/mmdコードが表示されます."></textarea></div>
-    </div>
 
-    <div class="btn-container">
-        <button id="btn1">翻訳用テキストをコピー</button>
-        <button id="btn2">DeepLで翻訳</button>
-        <button id="btn3">texコードをコピー</button>
+        <div class="container-fluid">
+            <div class="row my-2">
+                <!-- <button id="btn1">翻訳前をコピー</button> -->
+                <button class="btn btn-dark btn-lg col mx-1" id="btn2">DeepL無料版</button>
+                <button class="btn btn-dark btn-lg col mx-1" id="btn3">DeepL有料版</button>
+                <button class="btn btn-dark btn-lg col mx-1" id="btn4">ダウンロード</button>
+            </div>
+        </div>
     </div>
 </body>
 

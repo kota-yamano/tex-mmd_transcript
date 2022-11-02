@@ -1,4 +1,4 @@
-class txt_converter {
+export class txt_converter {
     constructor(config) {
         this.cmd_dict = {};
         this.tex_raw = '';
@@ -6,12 +6,13 @@ class txt_converter {
         this.txt_after = '';
         this.tex_proc = '';
         this.cfg = config;
-        this.encode_smb = config["encode_smb"];
+        this.encode_smb = 'TCMD';
+        this.opt_file = 'tex';
     }
     // TODO subpairsを適切に変換
     preproc_tex(tex) {
         let out_tex = tex;
-        for (const pair of this.cfg.preproc_subpairs) {
+        for (const pair of this.cfg[this.opt_file].preproc_subpairs) {
             const regexp = new RegExp(pair[0]);
             out_tex = out_tex.replace(regexp, pair[1]);
         }
@@ -20,48 +21,19 @@ class txt_converter {
 
     postproc_tex(tex) {
         let out_tex = tex;
-        for (const pair of this.cfg.postproc_subpairs) {
+        for (const pair of this.cfg[this.opt_file].postproc_subpairs) {
             const regexp = new RegExp(pair[0]);
             out_tex = out_tex.replace(regexp, pair[1]);
         }
         return out_tex;
     }
 
-    /* encode_cmd(tex) {
-        let out_txt = tex;
-        let out_dict_list = [];
-        // 辞書に登録
-        let code_idx = 10000; // 0から始まる連番だと0が省略されてしまうことがある
-        for (const ptn of this.cfg.delimiters) {
-            if (Array.isArray(ptn)) {
-
-            }
-            else {
-                let cmd_dict = {};
-                const regexp = new RegExp(ptn);
-                for (const cmd_obj of out_txt.matchAll(regexp)) {
-                    const code = this.encode_smb + code_idx.toString().padStart(5, '0');
-                    code_idx = code_idx + 1;
-                    cmd_dict[code] = cmd_obj;
-                }
-                cmd_dict = this.flip_dict(cmd_dict);
-                out_dict_list.push(cmd_dict);
-                // コードに置き換え
-                for (const code in cmd_dict) {
-                    const cmd_obj = cmd_dict[code];
-                    out_txt = out_txt.slice(0, cmd_obj.index) + code + out_txt.slice(cmd_obj.index + cmd_obj[0].length);
-                }
-            }
-        }
-        out_dict_list.reverse();
-        return [out_txt, out_dict_list];
-    } */
     encode_cmd(tex) {
         let out_txt = tex;
         // 辞書に登録
         let code_idx = 10000; // 0から始まる連番だと0が省略されてしまうことがある
         let cmd_dict = {};
-        for (const ptn of this.cfg.delimiters) {
+        for (const ptn of this.cfg[this.opt_file].delimiters) {
             if (Array.isArray(ptn)) {
                 let cmd_list = [];
                 let cmd_dict_tmp = {};
@@ -76,7 +48,6 @@ class txt_converter {
                     cmd_list.push(cmd_obj);
                 }
                 cmd_list.sort((a, b) => a.index - b.index);
-                console.log(cmd_list);
 
                 let cmd_start = [];
                 let nest_num = 0;
@@ -130,9 +101,13 @@ class txt_converter {
                 let cmd_dict_tmp = {};
                 const regexp = new RegExp(ptn);
                 for (const cmd_obj of out_txt.matchAll(regexp)) {
+                    let cmd_all_obj = [];
                     const code = this.encode_smb + code_idx.toString().padStart(5, '0');
                     code_idx = code_idx + 1;
-                    cmd_dict_tmp[code] = cmd_obj;
+                    cmd_all_obj[0] = cmd_obj[0];
+                    cmd_all_obj.index = cmd_obj.index;
+                    cmd_dict_tmp[code] = cmd_all_obj;
+                    // console.log(regexp);
                 }
                 // 後方からコードに置き換え
                 for (const code in this.flip_dict(cmd_dict_tmp)) {
@@ -142,7 +117,6 @@ class txt_converter {
                 cmd_dict = Object.assign(cmd_dict, cmd_dict_tmp);
             }
         }
-        console.log(cmd_dict);
         return [out_txt, cmd_dict];
     }
 
@@ -191,6 +165,7 @@ class txt_converter {
         return out_obj;
     }
 
+    // 全角英数字を半角に直す
     zen2han(str) {
         return str.replace(/[！-～]/g, function (s) {
             return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
@@ -208,6 +183,30 @@ class txt_converter {
         this.tex_proc = this.postproc_tex(this.decode_cmd(this.txt_after, this.cmd_dict_list));
         return this.tex_proc;
     }
+
+    set_opt_file(opt_file) {
+        this.opt_file = opt_file;
+    }
+
+    set_encode_smb(smb) {
+        this.encode_smb = smb;
+    }
 }
 
-export default txt_converter;
+export function split_text_for_deepl(txt, char_limit) {
+    const strings = txt.split(/(?<=([\s\S]*?[.．。](\s*?)\n))/g);
+    let out_list = [];
+    let str_tmp = '';
+    for (const str_iter of strings) {
+        if (str_tmp.length + str_iter.length > char_limit) {
+            out_list.push(str_tmp);
+            str_tmp = str_iter;
+        }
+        else {
+            str_tmp = str_tmp + str_iter
+        }
+    }
+    out_list.push(str_tmp);
+
+    return out_list;
+}
