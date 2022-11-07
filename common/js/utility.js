@@ -123,27 +123,34 @@ export class txt_converter {
         return [out_txt, cmd_dict];
     }
 
-    decode_cmd(txt, cmd_dict) {
+    decode_cmd(txt, command_dict) {
         const regexp = new RegExp(this.cfg.encode_smb + '[0-9]{' + this.cfg.encode_digits_num.toString() + '}', 'ig');
         let out_tex = txt;
-        let iter_count = 0;
-        while (iter_count < Object.keys(cmd_dict).length) {
+        let cmd_dict = deepcopy(command_dict);
+        while (Object.keys(cmd_dict).length) {
             let code_obj_list = []
             for (const code_obj of out_tex.matchAll(regexp)) {
                 code_obj_list.push(code_obj)
             }
-            if (code_obj_list.length === 0) { break; }
+            if (code_obj_list.length === 0) {
+                console.log("some codes are missing:");
+                console.log(cmd_dict);
+                break;
+            }
             code_obj_list.reverse()
             for (const code_obj of code_obj_list) {
                 const code = code_obj[0];
                 if (code in cmd_dict) {
                     const cmd = cmd_dict[code][0];
                     out_tex = out_tex.slice(0, code_obj.index) + cmd + out_tex.slice(code_obj.index + code_obj[0].length);
+                    delete cmd_dict[code];
+                }
+                else {
+                    console.log("code: " + code + " is invalid.");
+                    return out_tex;
                 }
             }
-            iter_count++;
         }
-
         return out_tex;
     }
 
