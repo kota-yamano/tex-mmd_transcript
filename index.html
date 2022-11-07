@@ -29,6 +29,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#config"
+                                id="btn_open_config">
+                                詳細設定
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="https://github.com/kota-yamano/tex_shaper">
                                 GitHub
                             </a>
@@ -37,6 +43,44 @@
                 </div>
             </nav>
         </header>
+
+        <div class="modal" id="config" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">詳細設定</h5>
+                        <button type="button" class="btn-close" id="btn_close_config" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text">置換文字列</label>
+                            <input type="text" class="form-control" id="input_encode_smb" value="TCMD">
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text">inline equation</label>
+                            <select class="form-select" id="select_opt_inline_eq">
+                                <option value="-1">何もしない</option>
+                                <option value="0">$...$</option>
+                                <option value="1">/(.../)</option>
+                            </select>
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text">block equation</label>
+                            <select class="form-select" id="select_opt_block_eq">
+                                <option value="-1">何もしない</option>
+                                <option value="0">\begin{align}...\end{align}</option>
+                                <option value="1">\begin{align*}...\end{align*}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btn_reset_config">リセット</button>
+                        <button type="button" class="btn btn-primary" id="btn_save_config">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="container-fluid flex-grow-1">
             <div class="row h-100">

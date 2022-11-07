@@ -6,39 +6,42 @@ export class txt_converter {
         this.txt_after = '';
         this.tex_proc = '';
         this.cfg = config;
-        this.encode_smb = 'TCMD';
-        this.opt_file = 'tex';
     }
-    // TODO subpairsを適切に変換
-    preproc_tex(tex) {
+    preproc_tex(tex, old_sub_str_list, new_sub_str, del_str_list = []) {
         let out_tex = tex;
-        for (const pair of this.cfg[this.opt_file].preproc_subpairs) {
-            const regexp = new RegExp(pair[0]);
-            out_tex = out_tex.replace(regexp, pair[1]);
+        for (const old_sub_str of old_sub_str_list) {
+            const regexp = new RegExp(old_sub_str, 'g');
+            out_tex = out_tex.replace(regexp, new_sub_str);
+        }
+        if (del_str_list.length > 0) {
+            for (const del_str of del_str_list) {
+                const regexp = new RegExp(del_str, 'g');
+                out_tex = out_tex.replace(regexp, '');
+            }
         }
         return out_tex;
     }
 
-    postproc_tex(tex) {
-        let out_tex = tex;
-        for (const pair of this.cfg[this.opt_file].postproc_subpairs) {
-            const regexp = new RegExp(pair[0]);
-            out_tex = out_tex.replace(regexp, pair[1]);
-        }
-        return out_tex;
-    }
+    // postproc_tex(tex) {
+    //     let out_tex = tex;
+    //     for (const pair of this.cfg[this.cfg.opt_file].postproc_subpairs) {
+    //         const regexp = new RegExp(pair[0], 'g');
+    //         out_tex = out_tex.replace(regexp, pair[1]);
+    //     }
+    //     return out_tex;
+    // }
 
     encode_cmd(tex) {
         let out_txt = tex;
         // 辞書に登録
-        let code_idx = 10000; // 0から始まる連番だと0が省略されてしまうことがある
+        let code_idx = 10 ** (this.cfg.encode_digits_num - 1); // 0から始まる連番だと0が省略されてしまうことがある
         let cmd_dict = {};
-        for (const ptn of this.cfg[this.opt_file].delimiters) {
+        for (const ptn of this.cfg[this.cfg.opt_file].delimiters) {
             if (Array.isArray(ptn)) {
                 let cmd_list = [];
                 let cmd_dict_tmp = {};
-                const regexp_start = ptn[0];
-                const regexp_end = ptn[1];
+                const regexp_start = new RegExp(ptn[0], 'g');
+                const regexp_end = new RegExp(ptn[1], 'g');
                 for (const cmd_obj of out_txt.matchAll(regexp_start)) {
                     cmd_obj.type = 'start';
                     cmd_list.push(cmd_obj);
@@ -83,7 +86,7 @@ export class txt_converter {
                     let cmd_all_obj = [];
                     const cmd_start = cmd_start_list[i];
                     const cmd_end = cmd_end_list[i];
-                    const code = this.encode_smb + code_idx.toString().padStart(5, '0');
+                    const code = this.cfg.encode_smb + code_idx.toString();
                     code_idx = code_idx + 1;
                     cmd_all_obj[0] = out_txt.slice(cmd_start.index, cmd_end.index + cmd_end[0].length);
                     cmd_all_obj.index = cmd_start.index;
@@ -99,10 +102,10 @@ export class txt_converter {
             }
             else {
                 let cmd_dict_tmp = {};
-                const regexp = new RegExp(ptn);
+                const regexp = new RegExp(ptn, 'g');
                 for (const cmd_obj of out_txt.matchAll(regexp)) {
                     let cmd_all_obj = [];
-                    const code = this.encode_smb + code_idx.toString().padStart(5, '0');
+                    const code = this.cfg.encode_smb + code_idx.toString();
                     code_idx = code_idx + 1;
                     cmd_all_obj[0] = cmd_obj[0];
                     cmd_all_obj.index = cmd_obj.index;
@@ -121,23 +124,10 @@ export class txt_converter {
     }
 
     decode_cmd(txt, cmd_dict) {
-        const regexp = new RegExp(this.encode_smb + '[0-9]{5}', 'ig');
+        const regexp = new RegExp(this.cfg.encode_smb + '[0-9]{' + this.cfg.encode_digits_num.toString() + '}', 'ig');
         let out_tex = txt;
-        /*         for (const cmd_dict of cmd_dict_list) {
-                    let code_obj_list = []
-                    for (const code_obj of out_tex.matchAll(regexp)) {
-                        code_obj_list.push(code_obj)
-                    }
-                    code_obj_list.reverse()
-                    for (const code_obj of code_obj_list) {
-                        const code = code_obj[0];
-                        if (code in cmd_dict) {
-                            const cmd = cmd_dict[code][0];
-                            out_tex = out_tex.slice(0, code_obj.index) + cmd + out_tex.slice(code_obj.index + code_obj[0].length);
-                        }
-                    }
-                } */
-        while (true) {
+        let iter_count = 0;
+        while (iter_count < Object.keys(cmd_dict).length) {
             let code_obj_list = []
             for (const code_obj of out_tex.matchAll(regexp)) {
                 code_obj_list.push(code_obj)
@@ -151,6 +141,7 @@ export class txt_converter {
                     out_tex = out_tex.slice(0, code_obj.index) + cmd + out_tex.slice(code_obj.index + code_obj[0].length);
                 }
             }
+            iter_count++;
         }
 
         return out_tex;
@@ -173,23 +164,26 @@ export class txt_converter {
     }
 
     tex2trns(tex) {
-        this.tex_raw = this.zen2han(tex);
-        [this.txt_before, this.cmd_dict_list] = this.encode_cmd(this.preproc_tex(this.tex_raw));
+        this.tex_raw = tex;
+        let tex_tmp = this.zen2han(this.tex_raw);
+        if (this.cfg.opt_block_eq >= 0) {
+            tex_tmp = this.preproc_tex(tex_tmp, this.cfg.block_eq_delimiters, this.cfg.block_eq_subs[this.cfg.opt_block_eq], this.cfg.block_eq_delete);
+        }
+        if (this.cfg.opt_inline_eq >= 0) {
+            tex_tmp = this.preproc_tex(tex_tmp, this.cfg.inline_eq_delimiters, this.cfg.inline_eq_subs[this.cfg.opt_inline_eq]);
+        }
+        [this.txt_before, this.cmd_dict_list] = this.encode_cmd(tex_tmp);
         return this.txt_before;
     }
 
     trns2tex(txt) {
         this.txt_after = txt;
-        this.tex_proc = this.postproc_tex(this.decode_cmd(this.txt_after, this.cmd_dict_list));
+        this.tex_proc = this.decode_cmd(this.txt_after, this.cmd_dict_list);
         return this.tex_proc;
     }
 
-    set_opt_file(opt_file) {
-        this.opt_file = opt_file;
-    }
-
-    set_encode_smb(smb) {
-        this.encode_smb = smb;
+    set_config(cfg) {
+        this.cfg = deepcopy(cfg);
     }
 }
 
@@ -209,4 +203,9 @@ export function split_text_for_deepl(txt, char_limit) {
     out_list.push(str_tmp);
 
     return out_list;
+}
+
+export function deepcopy(obj) {
+    let copy_obj = JSON.parse(JSON.stringify(obj));
+    return copy_obj;
 }
