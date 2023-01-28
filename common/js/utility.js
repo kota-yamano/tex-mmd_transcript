@@ -140,10 +140,15 @@ export class txt_converter {
             code_obj_list.reverse()
             for (const code_obj of code_obj_list) {
                 const code = code_obj[0];
-                if (code in cmd_dict) {
-                    const cmd = cmd_dict[code][0];
+                if (code in command_dict) {
+                    const cmd = command_dict[code][0];
                     out_tex = out_tex.slice(0, code_obj.index) + cmd + out_tex.slice(code_obj.index + code_obj[0].length);
-                    delete cmd_dict[code];
+                    if (code in cmd_dict) {
+                        delete cmd_dict[code];
+                    }
+                    else {
+                        console.log("code: " + code + " appears more than once.");
+                    }
                 }
                 else {
                     console.log("code: " + code + " is invalid.");
@@ -163,9 +168,9 @@ export class txt_converter {
         return out_obj;
     }
 
-    // 全角英数字を半角に直す
+    // 全角英数字，記号を半角に直す
     zen2han(str) {
-        return str.replace(/[！-～]/g, function (s) {
+        return str.replace(/[Ａ-Ｚａ-ｚ０-９！-／：-＠［-｀｛-～、-〜”’・]/g, function (s) {
             return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
         });
     }
@@ -184,7 +189,7 @@ export class txt_converter {
     }
 
     trns2tex(txt) {
-        this.txt_after = txt;
+        this.txt_after = this.zen2han(txt);
         this.tex_proc = this.decode_cmd(this.txt_after, this.cmd_dict_list);
         return this.tex_proc;
     }
