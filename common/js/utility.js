@@ -124,6 +124,7 @@ export class txt_converter {
     }
 
     decode_cmd(txt, command_dict) {
+        // 大文字と小文字を区別せずに置き換え符号をマッチ
         const regexp = new RegExp(this.cfg.encode_smb + '[0-9]{' + this.cfg.encode_digits_num.toString() + '}', 'ig');
         let out_tex = txt;
         let cmd_dict = deepcopy(command_dict);
@@ -139,7 +140,7 @@ export class txt_converter {
             }
             code_obj_list.reverse()
             for (const code_obj of code_obj_list) {
-                const code = code_obj[0];
+                const code = code_obj[0].toUpperCase();
                 if (code in command_dict) {
                     const cmd = command_dict[code][0];
                     out_tex = out_tex.slice(0, code_obj.index) + cmd + out_tex.slice(code_obj.index + code_obj[0].length);
@@ -152,7 +153,7 @@ export class txt_converter {
                 }
                 else {
                     console.log("code: " + code + " is invalid.");
-                    return out_tex;
+                    out_tex = out_tex.slice(0, code_obj.index) + "(unknown command)" + out_tex.slice(code_obj.index + code_obj[0].length);
                 }
             }
         }
