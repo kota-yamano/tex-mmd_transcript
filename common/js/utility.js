@@ -170,9 +170,12 @@ export class txt_converter {
 
     // 全角英数字，記号を半角に直す
     zen2han(str) {
-        return str.replace(/[Ａ-Ｚａ-ｚ０-９！-／：-＠［-｀｛-～、-〜”’・]/g, function (s) {
+        str = str.replace(/[Ａ-Ｚａ-ｚ０-９！-／：-＠［-｀｛-～]/g, function (s) {
             return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
         });
+        str = str.replace('、', '，');
+        str = str.replace('。', '．');
+        return str
     }
 
     tex2trns(tex) {
