@@ -66,8 +66,8 @@ const config = {
             '\\\\(?:begin|end)\\{description\\}(?:\\[[\\s\\S]+?\\]|\\{[\\s\\S]+?\\})*',
             '\\\\(?:begin|end)\\{figure\\}(?:\\[[\\s\\S]+?\\]|\\{[\\s\\S]+?\\})*',
             '\\\\(?:begin|end)\\{minipage\\}(?:\\[[\\s\\S]+?\\]|\\{[\\s\\S]+?\\})*',
-            '\\\\(?:sub)*section',
-            '\\\\(?:sub)*caption\\**',
+            // '\\\\(?:sub)*section', // translate section title
+            // '\\\\(?:sub)*caption\\**', // translate caption title
             '\\\\section\\{REFERENCES\\}[\\s\\S]*(?!(?:\\\\section|\\\\appendix))',
             ['\\\\begin\\{([\\s\\S]+?)\\}(?:\\[[\\s\\S]+?\\]|\\{[\\s\\S]+?\\})*', '\\\\end\\{([\\s\\S]+?)\\}'], //tex \\begin &\\end
             '\\\\[^\\{\\[\\s]*(?:\\[[\\s\\S]+?\\]|\\{[\\s\\S]+?\\})+', // tex command
