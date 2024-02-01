@@ -86,7 +86,7 @@ export class txt_converter {
                     let cmd_all_obj = [];
                     const cmd_start = cmd_start_list[i];
                     const cmd_end = cmd_end_list[i];
-                    const code = this.cfg.encode_delimiter_left +  this.cfg.encode_smb + code_idx.toString() + this.cfg.encode_delimiter_right;
+                    const code = this.cfg.encode_smb + code_idx.toString();
                     code_idx = code_idx + 1;
                     cmd_all_obj[0] = out_txt.slice(cmd_start.index, cmd_end.index + cmd_end[0].length);
                     cmd_all_obj.index = cmd_start.index;
@@ -95,7 +95,7 @@ export class txt_converter {
                 // 後方からコードに置き換え
                 for (const code in this.flip_dict(cmd_dict_tmp)) {
                     const cmd_obj = cmd_dict_tmp[code];
-                    out_txt = out_txt.slice(0, cmd_obj.index) + code + out_txt.slice(cmd_obj.index + cmd_obj[0].length);
+                    out_txt = out_txt.slice(0, cmd_obj.index) + this.cfg.encode_delimiter_left + code + this.cfg.encode_delimiter_right + out_txt.slice(cmd_obj.index + cmd_obj[0].length);
                 }
                 cmd_dict = Object.assign(cmd_dict, cmd_dict_tmp);
 
@@ -105,7 +105,7 @@ export class txt_converter {
                 const regexp = new RegExp(ptn, 'g');
                 for (const cmd_obj of out_txt.matchAll(regexp)) {
                     let cmd_all_obj = [];
-                    const code = this.cfg.encode_delimiter_left + this.cfg.encode_smb + code_idx.toString() + this.cfg.encode_delimiter_right;
+                    const code = this.cfg.encode_smb + code_idx.toString();
                     code_idx = code_idx + 1;
                     cmd_all_obj[0] = cmd_obj[0];
                     cmd_all_obj.index = cmd_obj.index;
@@ -115,7 +115,7 @@ export class txt_converter {
                 // 後方からコードに置き換え
                 for (const code in this.flip_dict(cmd_dict_tmp)) {
                     const cmd_obj = cmd_dict_tmp[code];
-                    out_txt = out_txt.slice(0, cmd_obj.index) + code + out_txt.slice(cmd_obj.index + cmd_obj[0].length);
+                    out_txt = out_txt.slice(0, cmd_obj.index) + this.cfg.encode_delimiter_left + code + this.cfg.encode_delimiter_right + out_txt.slice(cmd_obj.index + cmd_obj[0].length);
                 }
                 cmd_dict = Object.assign(cmd_dict, cmd_dict_tmp);
             }
