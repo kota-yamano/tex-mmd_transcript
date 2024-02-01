@@ -1,6 +1,6 @@
-import { txt_converter, split_text_for_deepl, deepcopy } from "./utility.js";
-import config from "./config.js"
+import config from "./config.js";
 import { downloadAsTextFile } from "./file_utility.js";
+import { deepcopy, txt_converter } from "./utility.js";
 
 window.onload = function () {
     const ta1 = document.getElementById('txtarea1');
@@ -69,14 +69,10 @@ window.onload = function () {
     });
 
     btn2.addEventListener('click', () => {
-        const txt = ta2.value.replace(/\//g, "／");
-        const txt_list = split_text_for_deepl(txt, 5000);
-        for (const txt of txt_list) {
-            window.open("https://www.deepl.com/translator#en/ja/" + encodeURIComponent(txt));
-        }
+        window.open("https://www.deepl.com/translator#en/ja/");
     });
     btn3.addEventListener('click', () => {
-        window.open("https://www.deepl.com/translator#en/ja/" + encodeURIComponent(ta2.value.replace(/\//g, "／")));
+        window.open("https://mt-auto-minhon-mlt.ucri.jgn-x.jp/content/demo/");
     });
     btn4.addEventListener('click', () => {
         downloadAsTextFile('result.' + cfg_current.opt_file, ta4.value);

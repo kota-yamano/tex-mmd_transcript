@@ -34,7 +34,8 @@ export class txt_converter {
     encode_cmd(tex) {
         let out_txt = tex;
         // 辞書に登録
-        let code_idx = 10 ** (this.cfg.encode_digits_num - 1); // 0から始まる連番だと0が省略されてしまうことがある
+        // let code_idx = 10 ** (this.cfg.encode_digits_num - 1); // 0から始まる連番だと0が省略されてしまうことがある
+        let code_idx = 0; // textraにしたので0から初めてOK
         let cmd_dict = {};
         for (const ptn of this.cfg[this.cfg.opt_file].delimiters) {
             if (Array.isArray(ptn)) {
@@ -86,7 +87,7 @@ export class txt_converter {
                     let cmd_all_obj = [];
                     const cmd_start = cmd_start_list[i];
                     const cmd_end = cmd_end_list[i];
-                    const code = this.cfg.encode_smb + code_idx.toString();
+                    const code = this.cfg.encode_delimiter_left +  this.cfg.encode_smb + code_idx.toString() + this.cfg.encode_delimiter_right;
                     code_idx = code_idx + 1;
                     cmd_all_obj[0] = out_txt.slice(cmd_start.index, cmd_end.index + cmd_end[0].length);
                     cmd_all_obj.index = cmd_start.index;
@@ -105,7 +106,7 @@ export class txt_converter {
                 const regexp = new RegExp(ptn, 'g');
                 for (const cmd_obj of out_txt.matchAll(regexp)) {
                     let cmd_all_obj = [];
-                    const code = this.cfg.encode_smb + code_idx.toString();
+                    const code = this.cfg.encode_delimiter_left + this.cfg.encode_smb + code_idx.toString() + this.cfg.encode_delimiter_right;
                     code_idx = code_idx + 1;
                     cmd_all_obj[0] = cmd_obj[0];
                     cmd_all_obj.index = cmd_obj.index;
@@ -125,7 +126,7 @@ export class txt_converter {
 
     decode_cmd(txt, command_dict) {
         // 大文字と小文字を区別せずに置き換え符号をマッチ
-        const regexp = new RegExp(this.cfg.encode_smb + '[0-9]{' + this.cfg.encode_digits_num.toString() + '}', 'ig');
+        const regexp = new RegExp(this.cfg.encode_delimiter_left + this.cfg.encode_smb + '[0-9]*' + this.cfg.encode_delimiter_right, 'ig');
         let out_tex = txt;
         let cmd_dict = deepcopy(command_dict);
         while (Object.keys(cmd_dict).length) {

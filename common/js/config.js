@@ -1,5 +1,5 @@
 const config = {
-    version: '0.2.0',
+    version: '0.3.0',
     block_eq_delimiters: [
         '\\$\\$([\\s\\S]+?)\\$\\$',
         '\\\\\\[([\\s\\S]+?)\\\\\\]',
@@ -85,7 +85,9 @@ const config = {
             // '```smiles\\n.*?\\n```', // smiles(block mode)
         ],
     },
-    encode_smb: 'TCMD',
+    encode_smb: 'CMD',
+    encode_delimiter_left: '｟',
+    encode_delimiter_right: '｠',
     encode_digits_num: 5,
     opt_file: 'mmd',
     opt_inline_eq: -1,
