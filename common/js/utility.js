@@ -34,8 +34,7 @@ export class txt_converter {
     encode_cmd(tex) {
         let out_txt = tex;
         // 辞書に登録
-        // let code_idx = 10 ** (this.cfg.encode_digits_num - 1); // 0から始まる連番だと0が省略されてしまうことがある
-        let code_idx = 0; // textraにしたので0から初めてOK
+        let code_idx = 10 ** (this.cfg.encode_digits_num - 1); // 0から始まる連番だと0が省略されてしまうことがある
         let cmd_dict = {};
         for (const ptn of this.cfg[this.cfg.opt_file].delimiters) {
             if (Array.isArray(ptn)) {
@@ -126,7 +125,7 @@ export class txt_converter {
 
     decode_cmd(txt, command_dict) {
         // 大文字と小文字を区別せずに置き換え符号をマッチ
-        const regexp = new RegExp(this.cfg.encode_delimiter_left + this.cfg.encode_smb + '[0-9]*' + this.cfg.encode_delimiter_right, 'ig');
+        const regexp = new RegExp(this.cfg.encode_smb + '[0-9]{' + this.cfg.encode_digits_num.toString() + '}', 'ig');
         let out_tex = txt;
         let cmd_dict = deepcopy(command_dict);
         while (Object.keys(cmd_dict).length) {
